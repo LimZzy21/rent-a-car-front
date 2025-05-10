@@ -1,3 +1,4 @@
+import { FeatureVehicle } from "@/components/Home/FeatureVehicles"
 import { HomeHero } from "@/components/Home/Hero"
 import { ShortySection } from "@/components/Home/ShortySection"
 import { WhyChooseUs } from "@/components/Home/WhyChooseUs"
@@ -8,6 +9,7 @@ import { WhyChooseUs } from "@/components/Home/WhyChooseUs"
         <HomeHero />
         <WhyChooseUs />
         <ShortySection />
+        <FeatureVehicle />
         </div>
     )
 }
