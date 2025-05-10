@@ -16,7 +16,7 @@ export const VideoCard = ({ video, id }: { video: string; id: number }) => {
     >
       <video
         ref={videoRef}
-        preload="metadata"
+        preload="auto"
         muted
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

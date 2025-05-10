@@ -4,9 +4,9 @@ import { CustomButton } from "../common/UI/Buttons/CustomButton";
 
 export const FeatureVehicle = () => {
   return (
-    <section className="container mx-auto py-10">
-      <h4 className="text-4xl ">Feature Vehicles</h4>
-      <div className="flex flex-col md:flex-row justify-around w-full mt-[4rem] gap-y-4">
+    <section className="container mx-auto py-15">
+      <h4 className="lg:text-4xl text-3xl px-[5%] lg:px-0 ">Feature Vehicles</h4>
+      <div className="flex flex-col md:flex-row justify-between w-full mt-[4rem] gap-y-4">
         <div className="w-[90%] mx-auto md:mx-0 md:w-auto">
           <Image
             src={vehicle}
