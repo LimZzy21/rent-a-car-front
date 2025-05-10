@@ -15,7 +15,7 @@ const getVariantStyles = (variant: ButtonProps["variant"]) => {
     case "primary":
       return "bg-black text-white  hover:opacity-80 cursor-pointer rounded-xl";
     case "secondary":
-      return "bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl";
+      return "bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl  cursor-pointer ";
     case "text":
       return "bg-transparent hover:bg-gray-100 text-gray-900 cursor-pointer rounded-md";
     default:
