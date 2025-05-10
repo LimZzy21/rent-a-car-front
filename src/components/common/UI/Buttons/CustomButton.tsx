@@ -15,9 +15,9 @@ const getVariantStyles = (variant: ButtonProps["variant"]) => {
     case "primary":
       return "bg-black text-white  hover:opacity-80 cursor-pointer rounded-xl";
     case "secondary":
-      return "bg-gray-200 hover:bg-gray-300 text-gray-800";
+      return "bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl";
     case "text":
-      return "bg-transparent hover:bg-gray-100 text-gray-900 cursor-pointer rounded-xl";
+      return "bg-transparent hover:bg-gray-100 text-gray-900 cursor-pointer rounded-md";
     default:
       return "bg-blue-500 hover:bg-blue-600 text-white";
   }
@@ -30,7 +30,7 @@ const getSizeStyles = (size: ButtonProps["size"]) => {
     case "medium":
       return "px-4 py-2 text-base";
     case "large":
-      return "px-6 py-3 text-lg";
+      return "lg:px-6 lg:py-3 px-4 py-2 text-md lg:text-lg";
     default:
       return "px-4 py-2 text-base";
   }

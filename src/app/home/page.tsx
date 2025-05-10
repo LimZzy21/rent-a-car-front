@@ -1,9 +1,9 @@
+import { HomeHero } from "@/components/Home/Hero"
+
  const Home = () => {
     return (
         <div>
-            <h1>
-                Home
-            </h1>
+        <HomeHero />
         </div>
     )
 }
