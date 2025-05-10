@@ -1,3 +1,4 @@
+import CarsPreviews from "@/components/Home/CarsPreviews"
 import { CustomerReviews } from "@/components/Home/CustomerReview"
 import { FeatureVehicle } from "@/components/Home/FeatureVehicles"
 import { HomeHero } from "@/components/Home/Hero"
@@ -12,6 +13,7 @@ import { WhyChooseUs } from "@/components/Home/WhyChooseUs"
         <ShortySection />
         <FeatureVehicle />
         <CustomerReviews />
+        <CarsPreviews />
         </div>
     )
 }
