@@ -1,4 +1,5 @@
 import { HomeHero } from "@/components/Home/Hero"
+import { ShortySection } from "@/components/Home/ShortySection"
 import { WhyChooseUs } from "@/components/Home/WhyChooseUs"
 
  const Home = () => {
@@ -6,6 +7,7 @@ import { WhyChooseUs } from "@/components/Home/WhyChooseUs"
         <div>
         <HomeHero />
         <WhyChooseUs />
+        <ShortySection />
         </div>
     )
 }
