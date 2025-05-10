@@ -1,8 +1,8 @@
-'use client'
-import { useState, useRef, useCallback, useEffect } from 'react';
+"use client";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 interface UseVideoHoverReturn {
-  videoRef: React.RefObject<HTMLVideoElement| null>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   isHovering: boolean;
   handleMouseEnter: () => void;
   handleMouseLeave: () => void;
@@ -14,18 +14,43 @@ interface UsePlayOnHoverOptions {
   rootMargin?: string;
 }
 
-export const usePlayOnHover = (options: UsePlayOnHoverOptions = {}): UseVideoHoverReturn => {
+export const usePlayOnHover = (
+  options: UsePlayOnHoverOptions = {}
+): UseVideoHoverReturn => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
-  const { threshold = 0.5, rootMargin = '0px' } = options;
+  const [isMobile, setIsMobile] = useState(false);
+  const { threshold = 0.5, rootMargin = "0px" } = options;
 
   useEffect(() => {
-    if (!videoRef.current) return;
+    const checkIfMobile = () => {
+      return window.matchMedia("(max-width: 768px)").matches;
+    };
 
+    setIsMobile(checkIfMobile());
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleResize = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+    };
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleResize);
+      return () => mediaQuery.removeEventListener("change", handleResize);
+    }
+
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    if (!videoRef.current || !isMobile) return;
+
+    const currentContainer = containerRef.current;
+    
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             videoRef.current?.play();
             setIsHovering(true);
@@ -38,16 +63,16 @@ export const usePlayOnHover = (options: UsePlayOnHoverOptions = {}): UseVideoHov
       { threshold, rootMargin }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    if (currentContainer) {
+      observer.observe(currentContainer);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (currentContainer) {
+        observer.unobserve(currentContainer);
       }
     };
-  }, [threshold, rootMargin]);
+  }, [threshold, rootMargin, isMobile]);
 
   const handleMouseEnter = useCallback(() => {
     if (videoRef.current) {
@@ -68,6 +93,6 @@ export const usePlayOnHover = (options: UsePlayOnHoverOptions = {}): UseVideoHov
     isHovering,
     handleMouseEnter,
     handleMouseLeave,
-    containerRef
+    containerRef,
   };
 };
