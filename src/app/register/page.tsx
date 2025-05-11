@@ -1,12 +1,30 @@
+"use client";
 import { LINKS } from "@/common/constants/Globals/Links";
+import { registerSchema } from "@/common/validation/schemas/auth";
 import { SignOptionsWrapper } from "@/components/common/Login/SignOptionsWrapper";
 import { CustomButton } from "@/components/common/UI/Buttons/CustomButton";
 import { Checkbox } from "@/components/common/UI/Inputs/Checkbox";
 import { Input } from "@/components/common/UI/Inputs/Input";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { FaCarSide } from "react-icons/fa";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {},
+  });
+
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
+    console.log(data);
+  };
+
   return (
     <SignOptionsWrapper>
       <div className="flex items-center justify-center gap-3 sm:gap-5 flex-col px-4 sm:px-0">
@@ -21,11 +39,16 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
-      <form className="flex flex-col rounded-lg w-full gap-y-[1rem] sm:gap-y-[1.5rem] px-4 sm:px-0">
+      <form
+        className="flex flex-col rounded-lg w-full gap-y-[1rem] sm:gap-y-[1.5rem] px-4 sm:px-0"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Input
           id="name"
           label="Full Name"
           type="text"
+          error={errors.name?.message}
+          {...register("name")}
           placeholder="Enter your full name"
         />
 
@@ -33,6 +56,8 @@ export default function RegisterPage() {
           id="email"
           label="Email"
           type="email"
+          error={errors.email?.message}
+          {...register("email")}
           placeholder="Enter your email"
         />
 
@@ -40,6 +65,8 @@ export default function RegisterPage() {
           id="password"
           label="Password"
           type="password"
+          error={errors.password?.message}
+          {...register("password")}
           placeholder="Enter your password"
         />
 
@@ -47,12 +74,16 @@ export default function RegisterPage() {
           id="confirmPassword"
           label="Confirm Password"
           type="password"
+          error={errors.confirmPassword?.message}
+          {...register("confirmPassword")}
           placeholder="Confirm your password"
         />
 
         <div className="flex justify-between items-center">
           <Checkbox
             id="agree"
+            error={errors.agree?.message}
+            {...register("agree")}
             label={
               <>
                 I agree to the{" "}

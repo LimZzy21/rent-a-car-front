@@ -1,12 +1,30 @@
+"use client";
 import { LINKS } from "@/common/constants/Globals/Links";
+import { loginSchema } from "@/common/validation/schemas/auth";
 import { SignOptionsWrapper } from "@/components/common/Login/SignOptionsWrapper";
 import { CustomButton } from "@/components/common/UI/Buttons/CustomButton";
 import { Checkbox } from "@/components/common/UI/Inputs/Checkbox";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/common/UI/Inputs/Input";
 import Link from "next/link";
 import { FaCarSide } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export default function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {},
+  });
+
+  const onSubmit = (data: z.infer<typeof loginSchema>) => {
+    console.log(data);
+  };
+
   return (
     <SignOptionsWrapper>
       <div className="flex items-center justify-center gap-3 sm:gap-5 flex-col px-4 sm:px-0">
@@ -21,17 +39,24 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      <form className="flex flex-col rounded-lg w-full gap-y-[1rem] sm:gap-y-[1.5rem] px-4 sm:px-0">
+      <form
+        className="flex flex-col rounded-lg w-full gap-y-[1rem] sm:gap-y-[1.5rem] px-4 sm:px-0"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Input
           id="email"
           label="Email"
           type="email"
+          error={errors.email?.message}
+          {...register("email")}
           placeholder="Enter your email"
         />
         <Input
           id="password"
           label="Password"
           type="password"
+          error={errors.password?.message}
+          {...register("password")}
           placeholder="Enter your password"
         />
         <div className="flex justify-between items-center flex-wrap gap-y-2">
