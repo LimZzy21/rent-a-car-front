@@ -49,7 +49,7 @@ export const CustomButton = ({
 }: ButtonProps) => {
   return (
     <button
-      className={`
+      className={` flex items-center justify-center 
           ${getVariantStyles(variant)}
           ${getSizeStyles(size)}
           ${className}

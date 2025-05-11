@@ -10,8 +10,28 @@ import Link from "next/link";
 import { FaCarSide } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { userLogin } from "@/common/api/auth/auth";
+import { useState } from "react";
+import { AxiosError } from "axios";
+import { AuthErrors } from "@/common/constants/api/errors/auth";
+
 
 export default function LoginPage() {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { mutate: login, isPending } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: userLogin,
+
+    onError: (error: AxiosError<{ message: string }>) => {
+      setErrorMessage(
+        AuthErrors[error.response?.data?.message as keyof typeof AuthErrors] ||
+          "Failed to login"
+      );
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -22,7 +42,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: z.infer<typeof loginSchema>) => {
-    console.log(data);
+    login(data);
   };
 
   return (
@@ -69,10 +89,14 @@ export default function LoginPage() {
           variant="primary"
           className="w-full h-[2.8rem] sm:h-[3.2rem] text-sm sm:text-base"
           type="submit"
+          isLoading={isPending}
         >
           Login
         </CustomButton>
       </form>
+      {errorMessage && (
+        <p className="text-red-500 text-sm sm:text-base">{errorMessage}</p>
+      )}
       <div className="flex items-center justify-center gap-x-1 text-sm sm:text-base">
         <p className="text-gray-600">Don&apos;t have an account?</p>
         <Link

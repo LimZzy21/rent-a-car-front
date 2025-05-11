@@ -10,8 +10,26 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FaCarSide } from "react-icons/fa";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { userRegister } from "@/common/api/auth/auth";
+import { AxiosError } from "axios";
+import { useState } from "react";
+import { AuthErrors } from "@/common/constants/api/errors/auth";
 
 export default function RegisterPage() {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { mutate: signUp, isPending } = useMutation({
+    mutationKey: ["signUp"],
+    mutationFn: userRegister,
+    onError: (error: AxiosError<{ message: string }>) => {
+      setErrorMessage(
+        AuthErrors[error.response?.data?.message as keyof typeof AuthErrors] ||
+          "Failed to register"
+      );
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -22,7 +40,7 @@ export default function RegisterPage() {
   });
 
   const onSubmit = (data: z.infer<typeof registerSchema>) => {
-    console.log(data);
+    signUp(data);
   };
 
   return (
@@ -44,11 +62,11 @@ export default function RegisterPage() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
-          id="name"
+          id="fullName"
           label="Full Name"
           type="text"
-          error={errors.name?.message}
-          {...register("name")}
+          error={errors.fullName?.message}
+          {...register("fullName")}
           placeholder="Enter your full name"
         />
 
@@ -99,6 +117,7 @@ export default function RegisterPage() {
           />
         </div>
         <CustomButton
+          disabled={isPending}
           variant="primary"
           className="w-full h-[2.8rem] sm:h-[3.2rem] text-sm sm:text-base"
           type="submit"
@@ -115,6 +134,9 @@ export default function RegisterPage() {
           Sign in
         </Link>
       </div>
+      {errorMessage && (
+        <p className="text-red-500 text-sm sm:text-base">{errorMessage}</p>
+      )}
     </SignOptionsWrapper>
   );
 }
