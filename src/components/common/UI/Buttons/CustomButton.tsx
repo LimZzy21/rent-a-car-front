@@ -4,6 +4,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary" | "text";
   size?: "small" | "medium" | "large";
   isLoading?: boolean;
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?: () => void;
   children: React.ReactNode;
@@ -44,6 +45,7 @@ export const CustomButton = ({
   onClick,
   children,
   className,
+  type = "button",
 }: ButtonProps) => {
   return (
     <button
@@ -54,6 +56,7 @@ export const CustomButton = ({
         `}
       disabled={disabled || isLoading}
       onClick={onClick}
+      type={type}
     >
       {isLoading ? <Spinner /> : children}
     </button>
