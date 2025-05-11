@@ -6,7 +6,7 @@ import { Input } from "@/components/common/UI/Inputs/Input";
 import Link from "next/link";
 import { FaCarSide } from "react-icons/fa";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <SignOptionsWrapper>
       <div className="flex items-center justify-center gap-3 sm:gap-5 flex-col px-4 sm:px-0">
@@ -15,46 +15,73 @@ export default function LoginPage() {
           <p className="text-2xl sm:text-3xl font-semibold">LuxDrive</p>
         </div>
         <div className="flex flex-col items-center justify-center gap-1">
-          <p className="text-xl sm:text-2xl">Welcome back!</p>
+          <p className="text-xl sm:text-2xl">Create an account</p>
           <p className="text-gray-500 text-sm sm:text-base text-center">
-            Please enter your details to sign in
+            Join us to start your luxury driving experience
           </p>
         </div>
       </div>
       <form className="flex flex-col rounded-lg w-full gap-y-[1rem] sm:gap-y-[1.5rem] px-4 sm:px-0">
+        <Input
+          id="name"
+          label="Full Name"
+          type="text"
+          placeholder="Enter your full name"
+        />
+
         <Input
           id="email"
           label="Email"
           type="email"
           placeholder="Enter your email"
         />
+
         <Input
           id="password"
           label="Password"
           type="password"
           placeholder="Enter your password"
         />
-        <div className="flex justify-between items-center flex-wrap gap-y-2">
-          <Checkbox id="remember" label="Remember me" />
-          <p className="text-gray-600 cursor-pointer hover:underline hover:text-gray-900 text-xs sm:text-base">
-            Forgot password?
-          </p>
+
+        <Input
+          id="confirmPassword"
+          label="Confirm Password"
+          type="password"
+          placeholder="Confirm your password"
+        />
+
+        <div className="flex justify-between items-center">
+          <Checkbox
+            id="agree"
+            label={
+              <>
+                I agree to the{" "}
+                <span className="text-gray-900 hover:underline inline cursor-pointer">
+                  Terms and Conditions
+                </span>{" "}
+                and{" "}
+                <span className="text-gray-900 hover:underline inline cursor-pointer">
+                  Privacy Policy
+                </span>
+              </>
+            }
+          />
         </div>
         <CustomButton
           variant="primary"
           className="w-full h-[2.8rem] sm:h-[3.2rem] text-sm sm:text-base"
           type="submit"
         >
-          Login
+          Register
         </CustomButton>
       </form>
       <div className="flex items-center justify-center gap-x-1 text-sm sm:text-base">
-        <p className="text-gray-600">Don&apos;t have an account?</p>
+        <p className="text-gray-600">Already have an account?</p>
         <Link
-          href={LINKS.REGISTER}
+          href={LINKS.LOGIN}
           className="text-gray-900 cursor-pointer hover:underline font-semibold"
         >
-          Sign up
+          Sign in
         </Link>
       </div>
     </SignOptionsWrapper>
