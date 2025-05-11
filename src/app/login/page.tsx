@@ -10,20 +10,26 @@ import Link from "next/link";
 import { FaCarSide } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userLogin } from "@/common/api/auth/auth";
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { AuthErrors } from "@/common/constants/api/errors/auth";
-
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState("");
-
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const { mutate: login, isPending } = useMutation({
     mutationKey: ["login"],
     mutationFn: userLogin,
 
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.setQueryData(["userProfile"], null);
+      router.push(LINKS.HOME);
+    },
     onError: (error: AxiosError<{ message: string }>) => {
       setErrorMessage(
         AuthErrors[error.response?.data?.message as keyof typeof AuthErrors] ||

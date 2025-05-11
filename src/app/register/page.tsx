@@ -15,9 +15,11 @@ import { userRegister } from "@/common/api/auth/auth";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { AuthErrors } from "@/common/constants/api/errors/auth";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
   const { mutate: signUp, isPending } = useMutation({
     mutationKey: ["signUp"],
@@ -27,6 +29,9 @@ export default function RegisterPage() {
         AuthErrors[error.response?.data?.message as keyof typeof AuthErrors] ||
           "Failed to register"
       );
+    },
+    onSuccess: () => {
+      router.push(LINKS.LOGIN);
     },
   });
 

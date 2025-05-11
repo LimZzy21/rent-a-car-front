@@ -12,6 +12,8 @@ export const userLogin = async (data: z.infer<typeof loginSchema>) => {
     throw new Error("Failed to login");
   }
 
+  localStorage.setItem("token", response.data.accessToken);
+
   return response.data;
 };
 
