@@ -1,6 +1,6 @@
 export const LINKS = {
   HOME: "/home",
-  FLEET: "/fleet",
+  CARS: "/cars",
   SHORTSY: "/fleet",
   CONTACT:"/contact",
   REGISTER:"/register",

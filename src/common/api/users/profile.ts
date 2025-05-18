@@ -15,3 +15,4 @@ export const getUserProfile = async () => {
 
   return response.data;
 };
+

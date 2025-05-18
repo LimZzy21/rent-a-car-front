@@ -8,7 +8,8 @@ export enum AuthErrors {
   NOT_FOUND = "Not found",
   BAD_REQUEST = "Bad request",
   CONFLICT = "Conflict",
-  
+  FAILED_TO_REGISTER="Failed to register",
+  FAILED_TO_LOGIN="Failed to login"
 }
 
 
