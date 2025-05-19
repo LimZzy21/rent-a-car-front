@@ -1,80 +1,152 @@
 "use client";
 
+import { useState } from "react";
+import CarCard from "@/app/cars/CarCard";
+import Pagination from "@/components/common/Pagination";
+import { getCars } from "@/common/api/car/car";
 import { useQuery } from "@tanstack/react-query";
-import { getCarById } from "@/common/api/car/car";
-import { Car } from "@/common/api/car/types";
-import { useState, useEffect } from "react";
-import { CardDescription } from "./CardDesctiption";
-import { Features } from "./Features";
-import { CarActions } from "./CarActions";
-import { CarImages } from "./CarImages";
-import { CAR_CAR_DETAILS } from "@/common/constants/Car/Car";
+import { Car, ApiResponse } from "@/common/api/car/types";
 
-const CarDetails = () => {
-  const [currentShowImage, setCurrentShowImage] = useState<string | null>(null);
+export default function Cars() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
 
   const {
-    data: car,
+    data: response,
     isLoading,
     error,
-  } = useQuery<Car>({
-    queryKey: ["carDetails", "18204bf8-c489-48a4-be2c-842d12939da6"],
-    queryFn: () => getCarById("18204bf8-c489-48a4-be2c-842d12939da6"),
-    staleTime: 1000 * 60 * 5,
-    retry: 3,
+  } = useQuery<ApiResponse<Car>>({
+    queryKey: ["cars", currentPage, searchQuery, sortOrder],
+    queryFn: () => getCars(currentPage, 6),
+    placeholderData: (previousData) => previousData,
   });
 
-  useEffect(() => {
-    if (car && car.images && car.images.length > 0) {
-      setCurrentShowImage(car.images[0]);
-    }
-  }, [car]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(event.target.value);
+  };
 
   if (isLoading) {
-    return <div className="container mx-auto px-4 py-8">Loading...</div>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">Error loading data</div>
-    );
+    return <div>Error: {error.message}</div>;
   }
 
-  if (!car) {
-    return <div className="container mx-auto px-4 py-8">Data not found</div>;
+  if (!response?.data || !Array.isArray(response.data)) {
+    return <div>No cars available</div>;
   }
+
+  const filteredCars = response.data.filter((car: Car) => {
+    const carName = `${car.name} ${car.model} ${car.brand}`;
+    return carName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  const sortedCars = [...filteredCars].sort((a: Car, b: Car) => {
+    if (sortOrder === "price-asc") {
+      return a.price - b.price;
+    } else if (sortOrder === "price-desc") {
+      return b.price - a.price;
+    } else if (sortOrder === "name-asc") {
+      return a.name.localeCompare(b.name);
+    } else if (sortOrder === "name-desc") {
+      return b.name.localeCompare(a.name);
+    }
+    return 0;
+  });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-9xl">
-      <div className="flex flex-col md:flex-row gap-8 ">
-        <CarImages
-          car={car}
-          currentShowImage={currentShowImage}
-          setCurrentShowImage={setCurrentShowImage}
-        />
+    <div className="w-full h-full bg-gray-100 min-h-screen">
+      <div className="container mx-auto px-4 py-8 ">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">Available Sports Cars</h1>
+          <p className="text-gray-600">
+            Choose your dream car and hit the road in style.
+          </p>
+        </div>
 
-        <div className="w-full md:w-1/2">
-          <h1 className="text-3xl font-bold mb-2">{car.name}</h1>
-          <p className="text-xl mb-6">${car.price}</p>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            {CAR_CAR_DETAILS.map((item) => (
-              <CardDescription
-                key={item.id}
-                icon={item.icon}
-                description={car.carDetails?.[item.type]}
-                title={item.name}
-              />
-            ))}
+        <div className="flex justify-between mb-6">
+          <div className="flex gap-4">
+            <input
+              type="text"
+              placeholder="Search cars..."
+              className="border rounded px-3 py-2"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <select
+              className="border rounded px-3 py-2"
+              value={sortOrder}
+              onChange={handleSortChange}
+            >
+              <option className="font-sans" value="">
+                Sort by
+              </option>
+              <option className="font-sans" value="price-asc">
+                Price: Low to High
+              </option>
+              <option className="font-sans" value="price-desc">
+                Price: High to Low
+              </option>
+              <option className="font-sans" value="name-asc">
+                Name: A to Z
+              </option>
+              <option className="font-sans" value="name-desc">
+                Name: Z to A
+              </option>
+            </select>
           </div>
+        </div>
 
-          <Features features={car.features} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedCars.length === 0 ? (
+            <div className="col-span-full text-center py-8">
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No cars found
+              </h3>
+              <p className="text-gray-500">
+                Try changing the search parameters
+              </p>
+            </div>
+          ) : (
+            sortedCars.map((car) => (
+              <CarCard
+                key={car.id}
+                id={car.id}
+                name={car.name}
+                image={car.images[0]}
+                model={car.model}
+                brand={car.brand}
+                price={car.price.toString()}
+                speed={car.carDetails?.topSpeed.toString() || "0"}
+                horsepower={car.carDetails?.enginePower.toString() || "0"}
+                features={car.features.map((feature: string) => ({
+                  text: feature,
+                }))}
+                gearbox={car.carDetails?.transmission || "N/A"}
+                acceleration={car.carDetails?.acceleration.toString() || "0"}
+              />
+            ))
+          )}
+        </div>
 
-          <CarActions />
+        <div className="mt-8 flex justify-center items-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={response.meta.totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
     </div>
   );
-};
-
-export default CarDetails;
+}

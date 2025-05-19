@@ -24,6 +24,16 @@ export interface CarDetails {
   [key: string]: string | number;
 }
 
+export interface ApiResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
 // export interface User {
 //   id: string;
 // }
