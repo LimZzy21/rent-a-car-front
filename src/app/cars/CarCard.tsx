@@ -1,9 +1,10 @@
 "use client";
-import { FaRoad } from "react-icons/fa6";
+import { FaClock, FaRoad } from "react-icons/fa6";
 import { MdDone } from "react-icons/md";
 import { SlSpeedometer } from "react-icons/sl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { GiGearStickPattern } from "react-icons/gi";
 
 interface CarFeature {
   text: string;
@@ -52,7 +53,7 @@ const CarCard: React.FC<CarCardProps> = ({
       </div>
       <div className="p-4 flex flex-col flex-grow border rounded-b-lg border-gray-300">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="font-bold text-lg">
+          <h3 className="font-bold text-lg text-black">
             {name} {model} {brand}
           </h3>
           <p className="font-medium">${price}/day</p>
@@ -72,13 +73,13 @@ const CarCard: React.FC<CarCardProps> = ({
           </div>
           <div className="flex items-center gap-1">
             <span className="text-sm inline-flex items-center gap-1">
-              <FaRoad />
+              <GiGearStickPattern  />
               {gearbox}
             </span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-sm inline-flex items-center gap-1">
-              <FaRoad />
+              <FaClock />
               {acceleration}s
             </span>
           </div>
@@ -93,9 +94,6 @@ const CarCard: React.FC<CarCardProps> = ({
             ))}
           </div>
         </div>
-        <button className="w-full bg-black text-white py-2 rounded mt-auto">
-          Rent Now
-        </button>
       </div>
     </div>
   );
