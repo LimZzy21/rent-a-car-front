@@ -9,6 +9,7 @@ import { Features } from "../Features";
 import { CarActions } from "../CarActions";
 import { CarImages } from "../CarImages";
 import { CAR_CAR_DETAILS } from "@/common/constants/Car/Car";
+import { SimilarVehicles } from "../SimilarVenicles";
 
 type PageParams = {
   id: string;
@@ -59,7 +60,9 @@ const CarDetails = ({ params }: { params: Promise<PageParams> }) => {
         />
 
         <div className="w-full md:w-1/2">
-          <h1 className="text-3xl font-bold mb-2">{car.name} {car.model} {car.brand}</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            {car.name} {car.model} {car.brand}
+          </h1>
           <p className="text-xl mb-6">${car.price}</p>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
@@ -78,6 +81,9 @@ const CarDetails = ({ params }: { params: Promise<PageParams> }) => {
 
           <CarActions />
         </div>
+      </div>
+      <div className="mt-12 flex">
+        <SimilarVehicles />
       </div>
     </div>
   );

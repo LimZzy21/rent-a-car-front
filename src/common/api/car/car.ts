@@ -8,7 +8,12 @@ export const getCars = async (page = 1, limit = 10): Promise<ApiResponse<Car>> =
 };
 
 export const getCarById = async (id: string): Promise<Car> => {
-  const response = await axios.get<Car>(`${CAR_API.BASE}${CAR_API.GET_CAR_BY_ID}/${id}`);
+  const response = await axios.get<Car>(`${CAR_API.BASE}/${id}`);
+  return response.data;
+};
+
+export const getSimilarCars = async (id: string): Promise<Car[]> => {
+  const response = await axios.get<Car[]>(`${CAR_API.BASE}${CAR_API.GET_SIMILAR_CARS}/${id}`);
   return response.data;
 };
 
