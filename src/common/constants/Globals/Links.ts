@@ -8,4 +8,6 @@ export const LINKS = {
   RENT_CAR: "/rent-car",
   TEST_DRIVE: "/test-drive",
   SUCCESS_RENT: "/success-rent",
+  PROFILE: "/profile",
+  PROFILE_EDIT: "/profile/edit",
 };

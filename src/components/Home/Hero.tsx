@@ -2,8 +2,10 @@ import Image from "next/image";
 import heroImg from "@/assets/Home/Images/Hero/ferrari.webp";
 import { DarkFilter } from "../common/UI/Filters/DarkFilter";
 import { CustomButton } from "../common/UI/Buttons/CustomButton";
+import { useRouter } from "next/navigation";
 
 export const HomeHero = () => {
+  const router = useRouter();
   return (
     <div className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
       <DarkFilter />
@@ -23,7 +25,11 @@ export const HomeHero = () => {
           Rent premium sports cars for your next adventure
         </p>
         <div>
-          <CustomButton variant="secondary" size="large">
+          <CustomButton
+            variant="secondary"
+            size="large"
+              onClick={() => router.push("/cars")}
+          >
             Browse Cars
           </CustomButton>
         </div>

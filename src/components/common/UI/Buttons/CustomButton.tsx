@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
   children: React.ReactNode;
   className?: string;
+  onNavigate?: string;
 }
 
 const getVariantStyles = (variant: ButtonProps["variant"]) => {

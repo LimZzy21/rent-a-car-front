@@ -1,4 +1,6 @@
 import { UserProfile } from "@/common/api/users/types";
+import { LINKS } from "@/common/constants/Globals/Links";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -21,11 +23,22 @@ export const MiniProfile = ({ userProfile, onSignOut }: MiniProfileProps) => {
       <span className="text-black text-xl font-semibold">
         {userProfile.fullName}
       </span>
-      <FaRegUserCircle
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="text-balance cursor-pointer"
-        size={28}
-      />
+      {userProfile.avatar ? (
+        <Image
+          src={userProfile.avatar}
+          className="rounded-full cursor-pointer "
+          alt="User avatar"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          width={28}
+          height={28}
+        />
+      ) : (
+        <FaRegUserCircle
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="text-balance cursor-pointer"
+          size={28}
+        />
+      )}
       {isDropdownOpen && (
         <div className="relative inline-block text-left">
           <div
@@ -40,34 +53,29 @@ export const MiniProfile = ({ userProfile, onSignOut }: MiniProfileProps) => {
                 className="block px-4 py-2 text-sm text-gray-500 border-b-1 border-gray-300"
                 role="menuitem"
                 tabIndex={-1}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 id="menu-item-1"
               >
                 Signed in as {userProfile.email}
               </p>
               <Link
-                href="#"
+                href={LINKS.PROFILE}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-black hover:text-white cursor-pointer"
                 role="menuitem"
                 tabIndex={-1}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 id="menu-item-0"
               >
-                Account settings
+                Profile
               </Link>
 
-              <Link
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-black hover:text-white cursor-pointer"
-                role="menuitem"
-                tabIndex={-1}
-                id="menu-item-2"
-              >
-                Support
-              </Link>
+        
               <button
                 type="submit"
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-red-500 hover:text-white cursor-pointer  font-semibold rounded-b-md"
                 role="menuitem"
                 tabIndex={-1}
+                
                 id="menu-item-3"
                 onClick={handleSignOut}
               >
