@@ -20,13 +20,7 @@ export const CarActions = () => {
     }
   };
 
-  const handleScheduleTestDrive = () => {
-    if (user) {
-      router.push(LINKS.TEST_DRIVE);
-    } else {
-      router.push(LINKS.LOGIN);
-    }
-  };
+ 
 
   return (
     <div className="space-y-3">
@@ -36,13 +30,7 @@ export const CarActions = () => {
       >
         Rent This Car
       </CustomButton>
-      <CustomButton
-        variant="secondary"
-        onClick={handleScheduleTestDrive}
-        className="w-full py-3 rounded-lg font-medium"
-      >
-        Schedule Test Drive
-      </CustomButton>
+  
     </div>
   );
 };

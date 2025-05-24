@@ -7,4 +7,5 @@ export const LINKS = {
   LOGIN: "/login",
   RENT_CAR: "/rent-car",
   TEST_DRIVE: "/test-drive",
+  SUCCESS_RENT: "/success-rent",
 };

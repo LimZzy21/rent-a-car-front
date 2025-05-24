@@ -8,10 +8,13 @@ import { RentalFormData } from "@/common/validation/schemas/rent-car";
 import { RentalForm } from "./components/RentalForm";
 import { useDateLogic } from "./hooks/useDateLogic";
 import { AxiosError } from "axios";
+import { LINKS } from "@/common/constants/Globals/Links";
+import { useRouter } from "next/navigation";
 
 export const RentCarPage = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { data: car } = useQuery({
     queryKey: ["car", id],
     queryFn: () => getCarById(id as string),
@@ -26,9 +29,11 @@ export const RentCarPage = () => {
     mutationKey: ["rentCar"],
     mutationFn: createRental,
 
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-      queryClient.setQueryData(["userProfile"], null);
+      queryClient.setQueryData(["userProfile "], null);
+      queryClient.setQueryData(["rentedCar"], data);
+      router.push(`${LINKS.SUCCESS_RENT}`);
     },
     onError: (error: AxiosError<{ message: string }>) => {
       console.log(error);
@@ -37,17 +42,21 @@ export const RentCarPage = () => {
 
   const { isDateDisabled } = useDateLogic({ rentals });
 
-  const onSubmit = (data: RentalFormData) => {
-    console.log(data);
-    console.log(rentals);
-    rentCar({
-      carId: id as string,
-      rentedFrom: data.pickUpDate,
-      rentedTo: data.returnDate,
-      fullName: data.fullName,
-      tel: data.phone,
-      notes: data.notes,
-    });
+  const onSubmit = async (data: RentalFormData) => {
+    try {
+    await rentCar({
+        carId: id as string,
+        rentedFrom: data.pickUpDate,
+        rentedTo: data.returnDate,
+        fullName: data.fullName,
+        tel: data.phone,
+        notes: data.notes,
+      });
+
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

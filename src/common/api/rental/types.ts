@@ -5,4 +5,5 @@ export type Rental = {
   fullName: string;
   tel: string;
   notes?: string;
+  createdAt?: string;
 };
