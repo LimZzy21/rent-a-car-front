@@ -69,13 +69,24 @@ export const MiniProfile = ({ userProfile, onSignOut }: MiniProfileProps) => {
                 Profile
               </Link>
 
-        
+              {userProfile.role === "ADMIN" && (
+                <Link
+                  href={LINKS.ADMIN}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-500 hover:text-white cursor-pointer"
+                  role="menuitem"
+                  tabIndex={-1}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  id="menu-item-2"
+                >
+                  Admin Panel
+                </Link>
+              )}
+
               <button
                 type="submit"
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-red-500 hover:text-white cursor-pointer  font-semibold rounded-b-md"
                 role="menuitem"
                 tabIndex={-1}
-                
                 id="menu-item-3"
                 onClick={handleSignOut}
               >

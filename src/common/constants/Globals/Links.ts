@@ -10,4 +10,5 @@ export const LINKS = {
   SUCCESS_RENT: "/success-rent",
   PROFILE: "/profile",
   PROFILE_EDIT: "/profile/edit",
+  ADMIN: "/admin",
 };
