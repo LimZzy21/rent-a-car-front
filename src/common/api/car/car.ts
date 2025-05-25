@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CAR_API } from "@/common/constants/api/car";
-import { Car, ApiResponse } from "./types";
+import { Car, ApiResponse, CarFilters } from "./types";
 import { CreateCarFormData } from "@/common/validation/schemas/car";
 
 export const getCars = async (
@@ -13,7 +13,24 @@ export const getCars = async (
   return response.data;
 };
 
-export const getCarById = async (id: string)=> {
+export const getFilteredCars = async (
+  filters: CarFilters = {}
+): Promise<ApiResponse<Car>> => {
+  const queryParams = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      queryParams.append(key, value.toString());
+    }
+  });
+
+  const response = await axios.get<ApiResponse<Car>>(
+    `${CAR_API.BASE}${CAR_API.GET_FILTERED_CARS}?${queryParams.toString()}`
+  );
+  return response.data;
+};
+
+export const getCarById = async (id: string) => {
   const response = await axios.get<Car>(`${CAR_API.BASE}/${id}`);
   return response.data;
 };

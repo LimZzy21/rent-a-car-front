@@ -34,6 +34,30 @@ export interface ApiResponse<T> {
   };
 }
 
+export interface CarFilters {
+  brand?: string;
+  isCurrentlyRented?: boolean;
+  model?: string;
+  name?: string;
+  price?: number;
+  fuelType?: string;
+  transmission?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: 'price' | 'name' | 'rating' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+  minPrice?: number;
+  maxPrice?: number;
+  rating?: number;
+}
+
+export interface DashboardData {
+  totalCars: number;
+  totalUsers: number;
+  totalRentals: number;
+  activeRentals: number;
+}
+
 // export interface User {
 //   id: string;
 // }

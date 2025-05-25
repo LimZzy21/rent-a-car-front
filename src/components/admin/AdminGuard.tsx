@@ -12,8 +12,12 @@ interface AdminGuardProps {
 
 export const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
   const router = useRouter();
-  
-  const { data: userProfile, isLoading, error } = useQuery({
+
+  const {
+    data: userProfile,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["userProfile"],
     queryFn: getUserProfile,
     retry: false,
@@ -25,7 +29,7 @@ export const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
         router.push(LINKS.LOGIN);
         return;
       }
-      
+
       if (userProfile.role !== "ADMIN") {
         router.push(LINKS.HOME);
         return;
@@ -44,9 +48,9 @@ export const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
     );
   }
 
-  if (error || !userProfile || userProfile.role !== 'ADMIN') {
-    return null; 
+  if (error || !userProfile || userProfile.role !== "ADMIN") {
+    return null;
   }
 
   return <>{children}</>;
-}; 
+};

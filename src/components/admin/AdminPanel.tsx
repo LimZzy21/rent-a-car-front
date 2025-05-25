@@ -4,25 +4,30 @@ import { useState } from "react";
 import { FaCar, FaUsers, FaChartBar, FaPlus } from "react-icons/fa";
 import { CreateCarForm } from "./CreateCarForm";
 import { CreateCarFormData } from "@/common/validation/schemas/car";
+import { Dashboard } from "./Dashboard";
+import { Users } from "./Users";
+import { ManageCars } from "./ManageCars";
 
 type AdminSection = "dashboard" | "create-car" | "manage-cars" | "users";
 
 interface AdminPanelProps {
   onCreateCar?: (data: CreateCarFormData) => void;
   isCreatingCar?: boolean;
+  onDeleteCar?: (id: string) => void;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ 
   onCreateCar, 
-  isCreatingCar = false 
+  isCreatingCar = false,
+  onDeleteCar
 }) => {
   const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
 
   const menuItems = [
     { id: "dashboard" as AdminSection, label: "Dashboard", icon: <FaChartBar /> },
-    { id: "create-car" as AdminSection, label: "Створити машину", icon: <FaPlus /> },
-    { id: "manage-cars" as AdminSection, label: "Керувати машинами", icon: <FaCar /> },
-    { id: "users" as AdminSection, label: "Користувачі", icon: <FaUsers /> },
+    { id: "create-car" as AdminSection, label: "Create car", icon: <FaPlus /> },
+    { id: "manage-cars" as AdminSection, label: "Manage cars", icon: <FaCar /> },
+    { id: "users" as AdminSection, label: "Users", icon: <FaUsers /> },
   ];
 
   const renderContent = () => {
@@ -40,53 +45,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         );
       case "dashboard":
         return (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">
-              Адміністративна панель
-            </h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-blue-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-blue-800 mb-2">
-                  Всього машин
-                </h3>
-                <p className="text-3xl font-bold text-blue-600">0</p>
-              </div>
-              <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-green-800 mb-2">
-                  Активні оренди
-                </h3>
-                <p className="text-3xl font-bold text-green-600">0</p>
-              </div>
-              <div className="bg-yellow-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-yellow-800 mb-2">
-                  Всього користувачів
-                </h3>
-                <p className="text-3xl font-bold text-yellow-600">0</p>
-              </div>
-            </div>
-          </div>
+            <Dashboard />
         );
-      case "manage-cars":
+        case "manage-cars":
         return (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">
-              Керування машинами
-            </h1>
-            <p className="text-gray-600">
-              Тут буде список всіх машин з можливістю редагування та видалення.
-            </p>
-          </div>
+          <ManageCars onDeleteCar={onDeleteCar}   />
         );
       case "users":
         return (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">
-              Керування користувачами
-            </h1>
-            <p className="text-gray-600">
-              Тут буде список всіх користувачів з можливістю керування їхніми ролями.
-            </p>
-          </div>
+        <Users />
         );
       default:
         return null;
@@ -96,10 +63,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex">
-        {/* Бічна панель */}
         <div className="w-64 bg-white shadow-lg min-h-screen">
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Адмін панель</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6">Admin panel</h2>
             <nav className="space-y-2">
               {menuItems.map((item) => (
                 <button
@@ -119,7 +85,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         </div>
 
-        {/* Основний контент */}
         <div className="flex-1 p-8">
           {renderContent()}
         </div>
