@@ -4,6 +4,7 @@ import { Video } from "@/common/api/reviews/types";
 import { VideoPlayer } from "./VideoPlayer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { useVideosLikeStatus } from "@/common/hooks/useVideos";
 
 interface VideoFeedProps {
   videos: Video[];
@@ -20,6 +21,9 @@ export const VideoFeed: React.FC<VideoFeedProps> = ({
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(true);
+
+  const videoIds = videos.map((video) => video.id);
+  useVideosLikeStatus(videoIds);
 
   const minSwipeDistance = 50;
 

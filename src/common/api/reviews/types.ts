@@ -5,6 +5,7 @@ export interface Video {
   reviewerId: string;
   createdAt: string;
   videoKey: string;
+  likes: number;
   reviewedCar?: {
     id: string;
     name: string;

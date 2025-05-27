@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useVideoLikeStatus, useVideoLike } from "@/common/hooks/useVideos";
 
 interface VideoPlayerProps {
   video: Video;
@@ -34,14 +35,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   onTouchMove,
   onTouchEnd,
 }) => {
+  console.log(video);
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchEndY, setTouchEndY] = useState<number | null>(null);
+  const [lastTap, setLastTap] = useState<number>(0);
+  const [showHeart, setShowHeart] = useState(false);
+  const [heartPosition, setHeartPosition] = useState({ x: 0, y: 0 });
+
+  const { data: likeData } = useVideoLikeStatus(video.id);
+  const { mutate: handleLike } = useVideoLike();
+
+  const isLiked = likeData?.isLiked || false;
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -118,13 +127,57 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
 
   const toggleLike = () => {
-    setIsLiked(!isLiked);
+    handleLike(video.id);
   };
 
-  const handleVideoClick = () => {
+  const handleDoubleTap = (e: React.MouseEvent | React.TouchEvent) => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      e.preventDefault();
+
+      let clientX, clientY;
+      if ("touches" in e) {
+        clientX = e.touches[0]?.clientX || e.changedTouches[0]?.clientX;
+        clientY = e.touches[0]?.clientY || e.changedTouches[0]?.clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+
+      const rect = (e.target as HTMLElement).getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      setHeartPosition({ x, y });
+      setShowHeart(true);
+      handleLike(video.id);
+
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      setLastTap(now);
+    } else {
+      const currentTap = now;
+      setLastTap(currentTap);
+
+      setTimeout(() => {
+        setLastTap((prevLastTap) => {
+          if (prevLastTap === currentTap) {
+            togglePlayPause();
+          }
+          return prevLastTap;
+        });
+      }, DOUBLE_TAP_DELAY);
+    }
+  };
+
+  const handleVideoClickWithDoubleTap = (e: React.MouseEvent) => {
     const isTouchDevice = "ontouchstart" in window;
     if (!isTouchDevice) {
-      togglePlayPause();
+      handleDoubleTap(e);
     }
   };
 
@@ -155,13 +208,45 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (startY !== null && endY !== null) {
       const distance = Math.abs(startY - endY);
       if (distance < 30) {
-        togglePlayPause();
+        handleTouchDoubleTap();
       }
     } else if (startY !== null && endY === null) {
-      togglePlayPause();
+      handleTouchDoubleTap();
     }
 
     onTouchEnd?.();
+  };
+
+  const handleTouchDoubleTap = () => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      setHeartPosition({
+        x: window.innerWidth / 2 - 30,
+        y: window.innerHeight / 2 - 30,
+      });
+      setShowHeart(true);
+      handleLike(video.id);
+
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      setLastTap(now);
+    } else {
+      const currentTap = now;
+      setLastTap(currentTap);
+
+      setTimeout(() => {
+        setLastTap((prevLastTap) => {
+          if (prevLastTap === currentTap) {
+            togglePlayPause();
+          }
+          return prevLastTap;
+        });
+      }, DOUBLE_TAP_DELAY);
+    }
   };
 
   return (
@@ -177,7 +262,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         muted={isMuted}
         playsInline
         preload="metadata"
-        onClick={handleVideoClick}
+        onClick={handleVideoClickWithDoubleTap}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -189,7 +274,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           className="absolute inset-0 flex items-center justify-center"
-          onClick={handleVideoClick}
+          onClick={handleVideoClickWithDoubleTap}
         >
           <div className="flex flex-col items-center">
             <div className="bg-black bg-opacity-60 rounded-full p-6 shadow-xl mb-4">
@@ -199,9 +284,26 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               Tap to play or swipe to switch video
             </p>
             <p className="text-white text-sm opacity-80 hidden md:block">
-              Tap to play or swipe to swich video
+              Tap to play or swipe to switch video
             </p>
           </div>
+        </motion.div>
+      )}
+
+      {showHeart && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1.5 }}
+          exit={{ opacity: 0, scale: 2 }}
+          transition={{ duration: 0.7, ease: "easeInOut" }}
+          className="absolute pointer-events-none"
+          style={{
+            left: heartPosition.x - 30,
+            top: heartPosition.y - 30,
+            zIndex: 50,
+          }}
+        >
+          <FaHeart className="text-red-500 text-6xl drop-shadow-lg" />
         </motion.div>
       )}
 
@@ -213,7 +315,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       >
         <div className="flex justify-between items-end">
           <div className="flex-1">
-            {/* User Info */}
             <div className="flex items-center mb-2">
               {video.reviewer?.avatar ? (
                 <Image
@@ -282,9 +383,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               }`}
             >
               <FaHeart className="text-xl" />
+              <p className="text-white text-sm opacity-80 hidden md:block">
+                {video.likes}
+              </p>
             </button>
 
-            {/* Car Page Link Button */}
             {video.reviewedCar && (
               <button
                 onClick={() => router.push(`/car/${video.reviewedCar!.id}`)}

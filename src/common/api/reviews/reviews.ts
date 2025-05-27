@@ -23,6 +23,35 @@ export const getVideosByCarId = async (carId: string): Promise<Video[]> => {
   return response.data;
 };
 
+export const likeReview = async (reviewId: string) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.patch(
+    `${REVIEWS_API.BASE_URL}${REVIEWS_API.LIKE_REVIEW}/${reviewId}`,{
+      withCredentials: true,
+    },
+    {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+    }
+  );
+  return response.data;
+};
+
+export const checkLikeStatus = async (videoId: string): Promise<{ isLiked: boolean }> => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(
+    `${REVIEWS_API.BASE_URL}${REVIEWS_API.CHECK_LIKE_STATUS}/${videoId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
+
 // export const createReview = async (review: Review) => {
 //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, review);
 //     return response.data;
